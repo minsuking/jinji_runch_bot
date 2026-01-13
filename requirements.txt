@@ -1,0 +1,4 @@
+playwright==1.57.0
+requests>=2.32.0
+python-dotenv>=1.0.1
+python-telegram-bot==20.8

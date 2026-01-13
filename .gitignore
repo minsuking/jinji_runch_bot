@@ -1,0 +1,8 @@
+.env
+__pycache__/
+*.pyc
+downloads/*
+!downloads/.gitkeep
+.vscode/
+.idea/
+.DS_Store

@@ -1,0 +1,48 @@
+
+---
+
+# 10) GitHub Actions: `.github/workflows/daily.yml`
+
+> GitHub Actions cron은 **UTC 기준**입니다.  
+> **매일 11:30 KST(UTC+9)** = **02:30 UTC** → `30 2 * * *`
+
+```yaml
+name: Daily Kakao Post to Telegram
+
+on:
+  schedule:
+    - cron: "30 2 * * *"  # 11:30 KST
+  workflow_dispatch: {}
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install Playwright browsers
+        run: |
+          python -m playwright install --with-deps chromium
+
+      - name: Run bot
+        env:
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+          KAKAO_POSTS_URL: "https://pf.kakao.com/_sIJCxj/posts"
+          HEADLESS: "true"
+          DOWNLOAD_DIR: "downloads"
+        run: |
+          python src/main.py
