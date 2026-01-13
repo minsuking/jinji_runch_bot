@@ -1,18 +1,9 @@
-
----
-
-# 10) GitHub Actions: `.github/workflows/daily.yml`
-
-> GitHub Actions cron은 **UTC 기준**입니다.  
-> **매일 11:30 KST(UTC+9)** = **02:30 UTC** → `30 2 * * *`
-
-```yaml
 name: Daily Kakao Post to Telegram
 
 on:
   schedule:
-    - cron: "30 2 * * *"  # 11:30 KST
-  workflow_dispatch: {}
+    - cron: "30 2 * * 1-5"
+  workflow_dispatch:
 
 jobs:
   run:
@@ -33,16 +24,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Install Playwright browsers
+      - name: Install Playwright (Chromium)
         run: |
           python -m playwright install --with-deps chromium
 
-      - name: Run bot
+      - name: Run runner
         env:
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
           TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
-          KAKAO_POSTS_URL: "https://pf.kakao.com/_sIJCxj/posts"
+          KAKAO_POSTS_URL: ${{ secrets.KAKAO_POSTS_URL }}
           HEADLESS: "true"
           DOWNLOAD_DIR: "downloads"
         run: |
-          python src/main.py
+          python src/runner.py
