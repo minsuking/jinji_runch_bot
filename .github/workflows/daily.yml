@@ -3,6 +3,9 @@ name: Daily Kakao Post to Telegram
 on:
   schedule:
     - cron: "30 2 * * 1-5"
+    - cron: "32 2 * * 1-5"
+    - cron: "34 2 * * 1-5"
+    - cron: "36 2 * * 1-5"
   workflow_dispatch:
 
 jobs:
@@ -13,6 +16,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      # ✅ Restore dedupe state from previous runs
+      - name: Restore sent-state cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .state
+          # unique key for this run (restore will use restore-keys)
+          key: sent-state-${{ github.ref_name }}-${{ github.run_id }}
+          # pull the latest cache for this branch
+          restore-keys: |
+            sent-state-${{ github.ref_name }}-
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -37,3 +51,10 @@ jobs:
           DOWNLOAD_DIR: "downloads"
         run: |
           python src/runner.py
+
+      # ✅ Save dedupe state for next scheduled run(s)
+      - name: Save sent-state cache
+        uses: actions/cache/save@v4
+        with:
+          path: .state
+          key: sent-state-${{ github.ref_name }}-${{ github.run_id }}
