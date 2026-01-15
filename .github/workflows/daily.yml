@@ -1,6 +1,11 @@
-name: Daily Kakao Post to Telegram
+name: Daily Kakao Post to Telegram v2
 
 on:
+  schedule:
+    - cron: "30 2 * * 1-5"
+    - cron: "32 2 * * 1-5"
+    - cron: "34 2 * * 1-5"
+    - cron: "36 2 * * 1-5"
   workflow_dispatch:
 
 jobs:
